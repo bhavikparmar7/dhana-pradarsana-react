@@ -114,21 +114,23 @@ export default function LoginPage() {
       {!otpSent ? (
         <form
           onSubmit={handleSendOtp}
-          className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-sm space-y-6"
+          className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-sm"
         >
           <h1 className="text-2xl font-bold text-center mb-4">Login</h1>
-          <Input
-            type="tel"
-            placeholder="Phone Number"
-            value={phone}
-            onChange={handlePhoneChange}
-            maxLength={10}
-            required
-          />
-          <div id="recaptcha-container" />
-          <Button type="submit" className="w-full mt-4" disabled={loading}>
-            {loading ? "Sending..." : "Send OTP"}
-          </Button>
+          <div className="flex flex-col gap-3">
+            <Input
+              type="tel"
+              placeholder="Phone Number"
+              value={phone}
+              onChange={handlePhoneChange}
+              maxLength={10}
+              required
+            />
+            <div id="recaptcha-container" />
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Sending..." : "Send OTP"}
+            </Button>
+          </div>
         </form>
       ) : (
         <Form {...otpForm}>
