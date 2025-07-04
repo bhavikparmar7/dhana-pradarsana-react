@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
@@ -23,6 +24,7 @@ export default function LoginPage() {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const navigate = useNavigate();
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -100,7 +102,7 @@ export default function LoginPage() {
       localStorage.setItem("firebase_jwt", token);
       console.log("Firebase JWT:", token);
       toast.success("OTP verified! You are logged in.");
-      // Optionally, redirect or update UI here
+      navigate("/balance-sheet");
     } catch (err) {
       toast.error("Invalid OTP. Please try again.");
       console.error("OTP Verification Error:", err);
