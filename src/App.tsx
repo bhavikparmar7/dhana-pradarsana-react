@@ -12,6 +12,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
 import { auth } from "@/lib/firebase";
 import RequireAuth from "@/components/RequireAuth";
+import FileStatementsPage from "./pages/FileStatementsPage";
 
 
 function App() {
@@ -19,8 +20,9 @@ function App() {
     const unsubscribe = auth.onIdTokenChanged(async (user) => {
       console.log("[onIdTokenChanged] user:", user);
       if (user) {
-        const token = await user.getIdToken();
-        console.log("[onIdTokenChanged] new token set", token);
+        // Always force refresh to avoid using a soon-to-expire token
+        const token = await user.getIdToken(true);
+        console.log("[onIdTokenChanged] new token set (force refresh)", token);
         localStorage.setItem("firebase_jwt", token);
       } else {
         console.log("[onIdTokenChanged] user signed out, removing token");
@@ -58,6 +60,7 @@ function App() {
         <Route element={<RequireAuth><Layout /></RequireAuth>}>
           <Route path="/balance-sheet" element={<BalanceSheetPage />} />
           <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/file-statements" element={<FileStatementsPage />} />
         </Route>
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
