@@ -52,7 +52,11 @@ export function AppHeader() {
           <DropdownMenuLabel>{user?.name || "User"}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onClick={() => {
+            onClick={async () => {
+              // Sign out from Firebase Auth to stop token refresh
+              const { signOut } = await import("firebase/auth");
+              const { auth } = await import("@/lib/firebase");
+              await signOut(auth);
               localStorage.removeItem("firebase_jwt");
               window.location.href = "/login";
             }}
