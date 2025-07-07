@@ -221,7 +221,7 @@ export default function FileStatementsPage() {
               date={row?.date}
               description={row?.description}
               amount={row?.amount}
-              accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.productName }))}
+accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.productName, accountType: acc.accountType }))}
               accountId={activeTab}
               onResolved={async () => {
                 // Refresh transactions for the selected file
@@ -467,7 +467,7 @@ export default function FileStatementsPage() {
               </TabsTrigger>
             ))}
           </TabsList>
-  <div className="relative w-full flex-grow overflow-hidden" style={{ height: 'calc(100vh - 160px)' }}>
+  <div className="relative w-full flex-1 min-h-0 overflow-hidden">
             {uploadableAccounts.map(acc => (
               <TabsContent
                 key={acc.id}
@@ -517,7 +517,12 @@ export default function FileStatementsPage() {
                             fetchTx();
                           }}
                         >
-                          <div className="text-sm font-medium truncate w-full">{file.uploadedFileName}</div>
+                          <div
+                            className="text-sm font-medium truncate w-full break-all max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl overflow-hidden text-ellipsis"
+                            title={file.uploadedFileName}
+                          >
+                            {file.uploadedFileName}
+                          </div>
                           <div className="text-xs text-muted-foreground mt-1 w-full">
                             {file.uploadedAt ? (() => {
                               const d = new Date(file.uploadedAt);

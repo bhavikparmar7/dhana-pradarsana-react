@@ -13,6 +13,7 @@ export interface AccountOption {
 }
 
 export interface ResolveDialogProps {
+  accountType?: string; // Add accountType for color logic
   open: boolean;
   onOpenChange: (open: boolean) => void;
   selectedrawTransactionId: string;
@@ -24,7 +25,20 @@ export interface ResolveDialogProps {
   onResolved?: () => void; // Callback to refresh table after resolve
 }
 
-export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, date, description, amount, accounts = [], accountId, onResolved }: ResolveDialogProps) {
+export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, date, description, amount, accounts = [], accountId, onResolved, accountType }: ResolveDialogProps) {
+  // Find accountType if possible (from accounts or prop)
+  let resolvedAccountType = '';
+  if (accounts && accountId) {
+    // Try to get accountType from the account object if present
+    const acc = accounts.find(a => a.id === accountId);
+    if (acc && typeof (acc as { accountType?: string }).accountType === 'string') {
+      resolvedAccountType = (acc as { accountType?: string }).accountType!;
+    }
+  }
+  // Use accountType from props if not found in accounts
+  if (!resolvedAccountType && typeof accountType === 'string') {
+    resolvedAccountType = accountType;
+  }
   const [submitting, setSubmitting] = React.useState(false);
   // Format date as DD/MM/YYYY
   let formattedDate = '';
@@ -88,13 +102,22 @@ export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, da
         </DialogHeader>
         <div className="pt-1 pb-2 flex items-start justify-between gap-4">
           <div className="flex-1">
-            <div className="text-sm">{description}</div>
+            <div
+              className="text-sm break-all max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl overflow-hidden text-ellipsis whitespace-pre-line"
+              title={description}
+            >
+              {description}
+            </div>
           </div>
           <div className="flex items-center">
             <span
               className={
                 `font-mono text-2xl font-bold text-right ` +
-                (amount >= 0 ? 'text-green-700' : 'text-red-600')
+                (
+                  resolvedAccountType?.toLowerCase() === 'creditcard'
+                    ? (amount >= 0 ? 'text-red-600' : 'text-green-700')
+                    : (amount >= 0 ? 'text-green-700' : 'text-red-600')
+                )
               }
             >
               ₹ {amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
