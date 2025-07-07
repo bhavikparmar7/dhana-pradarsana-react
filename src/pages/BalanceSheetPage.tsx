@@ -128,7 +128,7 @@ export default function BalanceSheetPage() {
                     <div>
                       <div className="font-semibold font-sans text-gray-600 mb-1">Savings</div>
                       <ul className="space-y-1">
-                        {balanceSheet.assets.savings.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                        {balanceSheet.assets.savings.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-gray-100 transition">-</li>}
                         {balanceSheet.assets.savings.map(acc => (
                           <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-green-100 transition">
                             <span className="font-mono" title={acc.accountName}>
@@ -143,7 +143,7 @@ export default function BalanceSheetPage() {
                     <div>
                       <div className="font-semibold font-sans text-gray-600 mb-1">Investments</div>
                       <ul className="space-y-1">
-                        {balanceSheet.assets.investments.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                        {balanceSheet.assets.investments.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-gray-100 transition">-</li>}
                         {balanceSheet.assets.investments.map(acc => (
                           <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-green-100 transition">
                             <span className="font-mono" title={acc.accountName}>
@@ -158,7 +158,7 @@ export default function BalanceSheetPage() {
                     <div>
                       <div className="font-semibold font-sans text-gray-600 mb-1">Ledgers</div>
                       <ul className="space-y-1">
-                        {balanceSheet.assets.ledgers.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                        {balanceSheet.assets.ledgers.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-gray-100 transition">-</li>}
                         {balanceSheet.assets.ledgers.map(acc => (
                           <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-green-100 transition">
                             <span className="font-mono" title={acc.accountName}>
@@ -187,7 +187,7 @@ export default function BalanceSheetPage() {
                     <div>
                       <div className="font-semibold font-sans text-gray-600 mb-1">Credit Cards</div>
                       <ul className="space-y-1">
-                        {balanceSheet.liabilities.creditCards.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                        {balanceSheet.liabilities.creditCards.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-gray-100 transition">-</li>}
                         {balanceSheet.liabilities.creditCards.map(acc => (
                           <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">
                             <span className="font-mono" title={acc.accountName}>
@@ -203,7 +203,7 @@ export default function BalanceSheetPage() {
                       <div>
                         <div className="font-semibold font-sans text-gray-600 mb-1">Ledgers</div>
                         <ul className="space-y-1">
-                          {balanceSheet.liabilities.ledgers.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                          {balanceSheet.liabilities.ledgers.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-gray-100 transition">-</li>}
                           {balanceSheet.liabilities.ledgers.map(acc => (
                             <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">
                             <span className="font-mono" title={acc.accountName}>

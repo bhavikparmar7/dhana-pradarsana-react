@@ -368,13 +368,14 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                   if (!res.ok) {
                     const msg = res.status === 401 ? "Unauthorized" : `Upload failed (${res.status})`;
                     setFileError(msg);
+                    toast.error(msg);
                     return;
                   }
+                  toast.success("File uploaded successfully!");
                   setDialogOpen(false);
                   setSelectedAccountId("");
                   setSelectedFile(null);
                   setFileError(null);
-                  // Optionally, trigger a reload or toast
                   // Invalidate file list for the selected account
                   setFilesByAccount(prev => {
                     const updated = { ...prev };
@@ -382,7 +383,9 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                     return updated;
                   });
                 } catch (err) {
-                  setFileError((err as Error).message || "Upload failed");
+                  const msg = (err as Error).message || "Upload failed";
+                  setFileError(msg);
+                  toast.error(msg);
                 }
               }}
               className="space-y-4"
