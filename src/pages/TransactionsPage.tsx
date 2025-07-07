@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 
 
+
 import * as React from "react";
 
 import { toast } from "sonner";
@@ -10,6 +11,14 @@ import {
   getCoreRowModel,
   flexRender,
 } from "@tanstack/react-table";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -100,7 +109,14 @@ export default function TransactionsPage() {
       {
         header: "Account Name",
         accessorKey: "accountName",
-        cell: info => info.getValue() || "-",
+        cell: info => {
+          const value = info.getValue() || "-";
+          return (
+            <span className="block truncate max-w-xs whitespace-nowrap" title={value}>
+              {value}
+            </span>
+          );
+        },
       },
       {
         header: "Type",
@@ -183,26 +199,23 @@ export default function TransactionsPage() {
       {loading && <div className="text-muted-foreground">Loading...</div>}
       {error && <div className="text-red-500">{error}</div>}
       <div className="overflow-x-auto rounded-lg border bg-white dark:bg-gray-900">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-100 dark:bg-gray-800">
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="bg-gray-100 dark:bg-gray-800">
                 {headerGroup.headers.map(header => (
-                  <th
-                    key={header.id}
-                    className="px-4 py-2 text-left font-semibold whitespace-nowrap"
-                  >
+                  <TableHead key={header.id} className="px-4 py-2 text-left font-semibold whitespace-nowrap">
                     {flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody>
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows.map(row => (
-              <tr key={row.id} className="border-b last:border-0">
+              <TableRow key={row.id} className="border-b last:border-0">
                 {row.getVisibleCells().map(cell => (
-                  <td
+                  <TableCell
                     key={cell.id}
                     className={
                       cell.column.id === "amount"
@@ -211,19 +224,19 @@ export default function TransactionsPage() {
                     }
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
             {data.length === 0 && !loading && (
-              <tr>
-                <td colSpan={columns.length} className="text-center py-8 text-muted-foreground">
+              <TableRow>
+                <TableCell colSpan={columns.length} className="text-center py-8 text-muted-foreground">
                   No transactions found.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       {/* Pagination Controls */}
       <div className="flex items-center justify-between mt-4 gap-2">

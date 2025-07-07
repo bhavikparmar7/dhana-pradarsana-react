@@ -518,7 +518,7 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                           }}
                         >
                           <div
-                            className="text-sm font-medium truncate w-full break-all max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl overflow-hidden text-ellipsis"
+                            className="text-sm font-medium break-words whitespace-normal w-full"
                             title={file.uploadedFileName}
                           >
                             {file.uploadedFileName}
