@@ -7,6 +7,7 @@
 import Layout from "@/components/layout/layout";
 import BalanceSheetPage from "@/pages/BalanceSheetPage";
 import LoginPage from "@/pages/LoginPage";
+
 import TransactionsPage from "@/pages/TransactionsPage";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
@@ -53,10 +54,19 @@ function App() {
     };
   }, []);
 
+  // Helper component for /login route to redirect if already authenticated
+  function LoginOrRedirect() {
+    const isAuthenticated = !!localStorage.getItem("firebase_jwt");
+    if (isAuthenticated) {
+      return <Navigate to="/balance-sheet" replace />;
+    }
+    return <LoginPage />;
+  }
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginOrRedirect />} />
         <Route element={<RequireAuth><Layout /></RequireAuth>}>
           <Route path="/balance-sheet" element={<BalanceSheetPage />} />
           <Route path="/transactions" element={<TransactionsPage />} />
