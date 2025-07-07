@@ -1,5 +1,7 @@
 
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Minus, Equal } from "lucide-react"
 
 
 import React from "react"
@@ -20,10 +22,12 @@ type BalanceSheetData = {
     investments: AccountWithBalance[];
     ledgers: AccountWithBalance[];
   };
+  assetsWorth: number;
   liabilities: {
     creditCards: AccountWithBalance[];
     ledgers?: AccountWithBalance[];
   };
+  liabilitiesWorth: number;
 }
 
 export default function BalanceSheetPage() {
@@ -31,6 +35,7 @@ export default function BalanceSheetPage() {
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [balanceSheet, setBalanceSheet] = React.useState<BalanceSheetData | null>(null)
+  const [netWorth, setNetWorth] = React.useState<number | null>(null)
 
   React.useEffect(() => {
     if (!date) return;
@@ -53,6 +58,11 @@ export default function BalanceSheetPage() {
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         const data = await res.json();
         setBalanceSheet(data.balanceSheetData);
+        if (typeof data.netWorth === 'number') {
+          setNetWorth(data.netWorth);
+        } else {
+          setNetWorth(null);
+        }
       } catch (err) {
         let message = "Failed to fetch balance sheet";
         if (err instanceof Error) {
@@ -81,89 +91,136 @@ export default function BalanceSheetPage() {
         {error && <div className="text-red-500">{error}</div>}
 
         {balanceSheet && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex justify-center items-center text-xl font-bold">Assets</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="font-semibold mb-1">Savings</div>
-                    <ul className="space-y-1 text-muted-foreground">
-                      {balanceSheet.assets.savings.length === 0 && <li className="italic">None</li>}
-                      {balanceSheet.assets.savings.map(acc => (
-                        <li key={acc.accountId} className="flex justify-between">
-                          <span>{acc.accountName}</span>
-                          <span>₹ {acc.balanceAmount.toLocaleString()}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <div className="font-semibold mb-1">Investments</div>
-                    <ul className="space-y-1 text-muted-foreground">
-                      {balanceSheet.assets.investments.length === 0 && <li className="italic">None</li>}
-                      {balanceSheet.assets.investments.map(acc => (
-                        <li key={acc.accountId} className="flex justify-between">
-                          <span>{acc.accountName}</span>
-                          <span>₹ {acc.balanceAmount.toLocaleString()}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <div className="font-semibold mb-1">Ledgers</div>
-                    <ul className="space-y-1 text-muted-foreground">
-                      {balanceSheet.assets.ledgers.length === 0 && <li className="italic">None</li>}
-                      {balanceSheet.assets.ledgers.map(acc => (
-                        <li key={acc.accountId} className="flex justify-between">
-                          <span>{acc.accountName}</span>
-                          <span>₹ {acc.balanceAmount.toLocaleString()}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+          <>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+              <div className="flex flex-col md:flex-row md:gap-2 gap-1 w-full items-center">
+                <div className="flex-1 flex flex-col items-center justify-center bg-green-100 rounded-lg p-4">
+                  <div className="text-xs text-green-500 font-medium">Assets Worth</div>
+                  <div className="text-xl font-bold text-green-500">₹ {balanceSheet.assetsWorth?.toLocaleString('en-IN') ?? '-'}</div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex justify-center items-center text-xl font-bold">Liabilities</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="font-semibold mb-1">Credit Cards</div>
-                    <ul className="space-y-1 text-muted-foreground">
-                      {balanceSheet.liabilities.creditCards.length === 0 && <li className="italic">None</li>}
-                      {balanceSheet.liabilities.creditCards.map(acc => (
-                        <li key={acc.accountId} className="flex justify-between">
-                          <span>{acc.accountName}</span>
-                          <span>₹ {acc.balanceAmount.toLocaleString()}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  {Array.isArray(balanceSheet.liabilities.ledgers) && (
+                <div className="hidden md:flex items-center justify-center mx-1">
+                  <Minus className="w-6 h-6 text-muted-foreground" aria-label="minus" />
+                </div>
+                <div className="flex-1 flex flex-col items-center justify-center bg-red-100 rounded-lg p-4">
+                  <div className="text-xs text-red-500 font-medium">Liabilities Worth</div>
+                  <div className="text-xl font-bold text-red-500">₹ {balanceSheet.liabilitiesWorth?.toLocaleString('en-IN') ?? '-'}</div>
+                </div>
+                <div className="hidden md:flex items-center justify-center mx-1">
+                  <Equal className="w-6 h-6 text-muted-foreground" aria-label="equals" />
+                </div>
+                <div className="flex-1 flex flex-col items-center justify-center bg-blue-100 rounded-lg p-4">
+                  <div className="text-xs text-blue-500 font-medium">Net Worth</div>
+                  <div className="text-xl font-bold text-blue-500">₹ {netWorth?.toLocaleString('en-IN') ?? '-'}</div>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Assets Card */}
+              <Card className="shadow-lg border-2 border-green-100 bg-gradient-to-br from-green-50/60 to-white/80">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex justify-center items-center text-base font-bold text-gray-600 dark:text-gray-300 tracking-wide font-sans">
+                    <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-2"></span>
+                    Assets
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
                     <div>
-                      <div className="font-semibold mb-1">Ledgers</div>
-                      <ul className="space-y-1 text-muted-foreground">
-                        {balanceSheet.liabilities.ledgers.length === 0 && <li className="italic">None</li>}
-                        {balanceSheet.liabilities.ledgers.map(acc => (
-                          <li key={acc.accountId} className="flex justify-between">
-                            <span>{acc.accountName}</span>
-                            <span>₹ {acc.balanceAmount.toLocaleString()}</span>
+                      <div className="font-semibold mb-1">Savings</div>
+                      <ul className="space-y-1">
+                        {balanceSheet.assets.savings.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                        {balanceSheet.assets.savings.map(acc => (
+                          <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-green-100 transition">
+                            <span className="font-mono" title={acc.accountName}>
+                              {acc.accountName}
+                              {acc.productName ? ` (${acc.productName})` : ''}
+                            </span>
+                            <span className="font-mono">₹ {acc.balanceAmount.toLocaleString('en-IN')}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                    <div>
+                      <div className="font-semibold mb-1">Investments</div>
+                      <ul className="space-y-1">
+                        {balanceSheet.assets.investments.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                        {balanceSheet.assets.investments.map(acc => (
+                          <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-green-100 transition">
+                            <span className="font-mono" title={acc.accountName}>
+                              {acc.accountName}
+                              {acc.productName ? ` (${acc.productName})` : ''}
+                            </span>
+                            <span className="font-mono">₹ {acc.balanceAmount.toLocaleString('en-IN')}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <div className="font-semibold mb-1">Ledgers</div>
+                      <ul className="space-y-1">
+                        {balanceSheet.assets.ledgers.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                        {balanceSheet.assets.ledgers.map(acc => (
+                          <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-green-100 transition">
+                            <span className="font-mono" title={acc.accountName}>
+                              {acc.accountName}
+                              {acc.productName ? ` (${acc.productName})` : ''}
+                            </span>
+                            <span className="font-mono">₹ {acc.balanceAmount.toLocaleString('en-IN')}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Liabilities Card */}
+              <Card className="shadow-lg border-2 border-red-100 bg-gradient-to-br from-red-50/60 to-white/80">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex justify-center items-center text-base font-bold text-gray-600 dark:text-gray-300 tracking-wide font-sans">
+                    <span className="inline-block w-2 h-2 rounded-full bg-red-400 mr-2"></span>
+                    Liabilities
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="font-semibold mb-1">Credit Cards</div>
+                      <ul className="space-y-1">
+                        {balanceSheet.liabilities.creditCards.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                        {balanceSheet.liabilities.creditCards.map(acc => (
+                          <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">
+                            <span className="font-mono" title={acc.accountName}>
+                              {acc.accountName}
+                              {acc.productName ? ` (${acc.productName})` : ''}
+                            </span>
+                            <span className="font-mono">₹ {acc.balanceAmount.toLocaleString('en-IN')}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    {Array.isArray(balanceSheet.liabilities.ledgers) && (
+                      <div>
+                        <div className="font-semibold mb-1">Ledgers</div>
+                        <ul className="space-y-1">
+                          {balanceSheet.liabilities.ledgers.length === 0 && <li className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">-</li>}
+                          {balanceSheet.liabilities.ledgers.map(acc => (
+                            <li key={acc.accountId} className="flex justify-between items-center rounded px-2 py-1 hover:bg-red-100 transition">
+                            <span className="font-mono" title={acc.accountName}>
+                              {acc.accountName}
+                              {acc.productName ? ` (${acc.productName})` : ''}
+                            </span>
+                              <span className="font-mono">₹ {acc.balanceAmount.toLocaleString('en-IN')}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </>
         )}
       </div>
     </div>
