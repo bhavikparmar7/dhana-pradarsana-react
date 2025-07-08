@@ -364,12 +364,21 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                   setSelectedAccountId("");
                   setSelectedFile(null);
                   setFileError(null);
-                  // Invalidate file list for the selected account
-                  setFilesByAccount(prev => {
-                    const updated = { ...prev };
-                    delete updated[selectedAccountId];
-                    return updated;
-                  });
+                  // Refresh files for the active account tab
+                  if (activeTab) {
+                    setFilesLoading(prev => ({ ...prev, [activeTab]: true }));
+                    setFilesError(prev => ({ ...prev, [activeTab]: null }));
+                    try {
+                      const res = await fetchWithAuth(`${baseUrl}/raw-files/by-accountid?accountId=${encodeURIComponent(activeTab)}`);
+                      if (!res.ok) throw new Error(`API error: ${res.status}`);
+                      const json = await res.json();
+                      setFilesByAccount(prev => ({ ...prev, [activeTab]: json }));
+                    } catch (err) {
+                      setFilesError(prev => ({ ...prev, [activeTab]: (err as Error).message || "Failed to fetch files" }));
+                    } finally {
+                      setFilesLoading(prev => ({ ...prev, [activeTab]: false }));
+                    }
+                  }
                 } catch (err) {
                   const msg = (err as Error).message || "Upload failed";
                   setFileError(msg);
