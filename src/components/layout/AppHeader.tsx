@@ -13,22 +13,24 @@ export function AppHeader() {
     const token = localStorage.getItem("firebase_jwt");
     if (!token) return;
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3050";
-    fetch(`${apiBaseUrl}/users/by-userid`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // API returns: { userId, phone, name }
+    (async () => {
+      try {
+        const { fetchWithAuth } = await import("@/lib/fetchWithAuth");
+        const res = await fetchWithAuth(`${apiBaseUrl}/users/by-userid`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch user");
+        const data = await res.json();
         setUser({
           name: data.name || "User",
-          // No avatarUrl in API, fallback to default
         });
-      })
-      .catch(() => setUser({ name: "User" }));
+      } catch {
+        setUser({ name: "User" });
+      }
+    })();
   }, []);
 
   return (
@@ -60,6 +62,7 @@ export function AppHeader() {
               const { auth } = await import("@/lib/firebase");
               await signOut(auth);
               localStorage.removeItem("firebase_jwt");
+              localStorage.removeItem("firebase_jwt_expires_at");
               window.location.href = "/login";
             }}
             className="flex items-center gap-2"

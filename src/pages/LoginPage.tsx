@@ -42,7 +42,8 @@ export default function LoginPage() {
     try {
       // Check registration status before sending OTP
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3050";
-      const res = await fetch(`${apiBaseUrl}/users/is-registered?phone=${phone}`);
+      const { fetchWithAuth } = await import("@/lib/fetchWithAuth");
+      const res = await fetchWithAuth(`${apiBaseUrl}/users/is-registered?phone=${phone}`);
       if (res.status === 202) {
         // User is registered, proceed to send OTP
         if (!window.recaptchaVerifier) {
@@ -100,7 +101,10 @@ export default function LoginPage() {
       const user = result.user;
       const token = await user.getIdToken();
       localStorage.setItem("firebase_jwt", token);
-      console.log("Firebase JWT:", token);
+      // Set expiry 4 hours from now
+      const expiresAt = Date.now() + 4 * 60 * 60 * 1000;
+      localStorage.setItem("firebase_jwt_expires_at", expiresAt.toString());
+      console.log("Firebase JWT:", token, "expires at", new Date(expiresAt));
       toast.success("OTP verified! You are logged in.");
       navigate("/balance-sheet");
     } catch (err) {

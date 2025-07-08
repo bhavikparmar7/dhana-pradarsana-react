@@ -52,9 +52,8 @@ export default function BalanceSheetPage() {
           String(date.getMonth() + 1).padStart(2, '0'),
           String(date.getDate()).padStart(2, '0')
         ].join('-');
-        const res = await fetch(`${baseUrl}/transactions/balance-sheet?asOnDate=${asOnDate}`, {
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
+        const { fetchWithAuth } = await import("@/lib/fetchWithAuth");
+        const res = await fetchWithAuth(`${baseUrl}/transactions/balance-sheet?asOnDate=${asOnDate}`);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         const data = await res.json();
         setBalanceSheet(data.balanceSheetData);

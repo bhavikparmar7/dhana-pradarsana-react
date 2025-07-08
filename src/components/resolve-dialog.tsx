@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import * as React from "react";
 
 
@@ -67,15 +68,12 @@ export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, da
     setTransferTargetAccountId('');
     const fetchTypes = async () => {
       try {
-        const jwt = localStorage.getItem('firebase_jwt');
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        const res = await fetch(`${baseUrl}/transactions/type-categories`, {
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
+        const res = await fetchWithAuth(`${baseUrl}/transactions/type-categories`);
         if (!res.ok) throw new Error('Failed to fetch types');
         const json = await res.json();
         setTypeCategories(json);
-      } catch (err) {
+      } catch {
         setTypeCategories(null);
       }
     };
@@ -236,9 +234,8 @@ export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, da
               if (!selectedType || !selectedCategory || (subcategories.length > 0 && !selectedSubcategory) || !accountId) return;
               setSubmitting(true);
               try {
-                const jwt = localStorage.getItem('firebase_jwt');
                 const baseUrl = import.meta.env.VITE_API_BASE_URL;
-                const payload: any = {
+                const payload = {
                   rawTransactionId: selectedrawTransactionId,
                   date,
                   description,
@@ -250,11 +247,10 @@ export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, da
                 if (selectedSubcategory) payload.subcategory = selectedSubcategory;
                 if (remarks) payload.remarks = remarks;
                 if (selectedType === 'transfer' && transferTargetAccountId) payload.transferTargetAccountId = transferTargetAccountId;
-                const res = await fetch(`${baseUrl}/transactions/resolve`, {
+                const res = await fetchWithAuth(`${baseUrl}/transactions/resolve`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${jwt}`,
                   },
                   body: JSON.stringify(payload),
                 });
@@ -268,7 +264,7 @@ export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, da
                 setSubmitting(false);
                 onOpenChange(false);
                 if (onResolved) onResolved();
-              } catch (err) {
+              } catch {
                 toast.error('Failed to resolve transaction');
                 setSubmitting(false);
               }

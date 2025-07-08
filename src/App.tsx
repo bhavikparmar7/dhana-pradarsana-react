@@ -21,36 +21,32 @@ function App() {
     const unsubscribe = auth.onIdTokenChanged(async (user) => {
       console.log("[onIdTokenChanged] user:", user);
       if (user) {
-        // Always force refresh to avoid using a soon-to-expire token
-        const token = await user.getIdToken(true);
-        console.log("[onIdTokenChanged] new token set (force refresh)", token);
+        // Check expiry before refreshing token
+        const expiresAtStr = localStorage.getItem("firebase_jwt_expires_at");
+        const expiresAt = expiresAtStr ? parseInt(expiresAtStr, 10) : 0;
+        if (expiresAt && Date.now() > expiresAt) {
+          // Expired: logout
+          console.log("[onIdTokenChanged] token expired, logging out");
+          localStorage.removeItem("firebase_jwt");
+          localStorage.removeItem("firebase_jwt_expires_at");
+          await auth.signOut();
+          return;
+        }
+        // Not expired: refresh token and set new expiry
+        const token = await user.getIdToken();
+        const newExpiresAt = Date.now() + 4 * 60 * 60 * 1000;
+        console.log("[onIdTokenChanged] new token set (force refresh)", token, "expires at", new Date(newExpiresAt));
         localStorage.setItem("firebase_jwt", token);
+        localStorage.setItem("firebase_jwt_expires_at", newExpiresAt.toString());
       } else {
         console.log("[onIdTokenChanged] user signed out, removing token");
         localStorage.removeItem("firebase_jwt");
+        localStorage.removeItem("firebase_jwt_expires_at");
       }
     });
 
-    // Optionally, force refresh every 50 minutes (token expires in 1 hour)
-    const interval = setInterval(async () => {
-      const user = auth.currentUser;
-      console.log("[interval] auth.currentUser:", user);
-      if (user) {
-        try {
-          const token = await user.getIdToken(true); // force refresh
-          console.log("[interval] refreshed token set", token);
-          localStorage.setItem("firebase_jwt", token);
-        } catch (err) {
-          console.error("[interval] Error refreshing token:", err);
-        }
-      } else {
-        console.log("[interval] No user, skipping token refresh");
-      }
-    }, 50 * 60 * 1000);
-
     return () => {
       unsubscribe();
-      clearInterval(interval);
     };
   }, []);
 

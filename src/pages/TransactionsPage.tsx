@@ -53,9 +53,8 @@ export default function TransactionsPage() {
       try {
         const jwt = localStorage.getItem("firebase_jwt");
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        const res = await fetch(`${baseUrl}/transactions/by-userid?limit=${pageSize}&page=${page}`, {
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
+        const { fetchWithAuth } = await import("@/lib/fetchWithAuth");
+        const res = await fetchWithAuth(`${baseUrl}/transactions/by-userid?limit=${pageSize}&page=${page}`);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         const json = await res.json();
         setData(json.data || []);

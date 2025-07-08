@@ -4,6 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import React from "react";
 import { CircleDot, CircleCheck, TicketMinus, TicketCheck } from "lucide-react";
 import { toast } from "sonner";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { Button } from "@/components/ui/button";
 import { ResolveDialog } from "@/components/resolve-dialog";
 import { Input } from "@/components/ui/input";
@@ -73,9 +74,7 @@ export default function FileStatementsPage() {
       try {
         const jwt = localStorage.getItem("firebase_jwt");
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        const res = await fetch(`${baseUrl}/accounts/by-userid`, {
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
+        const res = await fetchWithAuth(`${baseUrl}/accounts/by-userid`);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         const json = await res.json();
         setAccounts(json);
@@ -130,9 +129,7 @@ export default function FileStatementsPage() {
           try {
             const jwt = localStorage.getItem("firebase_jwt");
             const baseUrl = import.meta.env.VITE_API_BASE_URL;
-            const res = await fetch(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(files[0].fileKey)}`, {
-              headers: { Authorization: `Bearer ${jwt}` },
-            });
+            const res = await fetchWithAuth(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(files[0].fileKey)}`);
             if (!res.ok) throw new Error(`API error: ${res.status}`);
             const json = await res.json();
             const txs = Array.isArray(json) ? json : (json.data || []);
@@ -232,9 +229,7 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                     try {
                       const jwt = localStorage.getItem("firebase_jwt");
                       const baseUrl = import.meta.env.VITE_API_BASE_URL;
-                      const res = await fetch(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(selectedFileKey)}`, {
-                        headers: { Authorization: `Bearer ${jwt}` },
-                      });
+                      const res = await fetchWithAuth(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(selectedFileKey)}`);
                       if (!res.ok) throw new Error(`API error: ${res.status}`);
                       const json = await res.json();
                       const txs = Array.isArray(json) ? json : (json.data || []);
@@ -254,9 +249,7 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                   try {
                     const jwt = localStorage.getItem("firebase_jwt");
                     const baseUrl = import.meta.env.VITE_API_BASE_URL;
-                    const res = await fetch(`${baseUrl}/raw-files/by-accountid?accountId=${encodeURIComponent(activeTab)}`, {
-                      headers: { Authorization: `Bearer ${jwt}` },
-                    });
+                    const res = await fetchWithAuth(`${baseUrl}/raw-files/by-accountid?accountId=${encodeURIComponent(activeTab)}`);
                     if (!res.ok) throw new Error(`API error: ${res.status}`);
                     const json = await res.json();
                     setFilesByAccount(prev => {
@@ -308,9 +301,7 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
       try {
         const jwt = localStorage.getItem("firebase_jwt");
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        const res = await fetch(`${baseUrl}/raw-files/by-accountid?accountId=${encodeURIComponent(activeTab)}`, {
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
+        const res = await fetchWithAuth(`${baseUrl}/raw-files/by-accountid?accountId=${encodeURIComponent(activeTab)}`);
         if (!res.ok) {
           const msg = `Failed to fetch files (${res.status})`;
           setFilesError(prev => ({ ...prev, [activeTab]: msg }));
@@ -358,11 +349,8 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                   const baseUrl = import.meta.env.VITE_API_BASE_URL;
                   const formData = new FormData();
                   formData.append("file", selectedFile);
-                  const res = await fetch(`${baseUrl}/raw-files/upload?accountId=${encodeURIComponent(selectedAccountId)}`, {
+                  const res = await fetchWithAuth(`${baseUrl}/raw-files/upload?accountId=${encodeURIComponent(selectedAccountId)}`, {
                     method: "POST",
-                    headers: {
-                      Authorization: `Bearer ${jwt}`
-                    },
                     body: formData
                   });
                   if (!res.ok) {
@@ -504,9 +492,7 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                               try {
                                 const jwt = localStorage.getItem("firebase_jwt");
                                 const baseUrl = import.meta.env.VITE_API_BASE_URL;
-                                const res = await fetch(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(file.fileKey)}`, {
-                                  headers: { Authorization: `Bearer ${jwt}` },
-                                });
+                                const res = await fetchWithAuth(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(file.fileKey)}`);
                                 if (!res.ok) throw new Error(`API error: ${res.status}`);
                                 const json = await res.json();
                                 const txs = Array.isArray(json) ? json : (json.data || []);
