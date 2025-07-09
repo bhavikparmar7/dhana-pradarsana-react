@@ -72,7 +72,6 @@ export default function FileStatementsPage() {
       setLoading(true);
       setError(null);
       try {
-        const jwt = localStorage.getItem("firebase_jwt");
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
         const res = await fetchWithAuth(`${baseUrl}/accounts/by-userid`);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -127,7 +126,6 @@ export default function FileStatementsPage() {
         setRawTxLoading(prev => ({ ...prev, [files[0].fileKey]: true }));
         const fetchTx = async () => {
           try {
-            const jwt = localStorage.getItem("firebase_jwt");
             const baseUrl = import.meta.env.VITE_API_BASE_URL;
             const res = await fetchWithAuth(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(files[0].fileKey)}`);
             if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -227,7 +225,6 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                   setRawTxLoading(prev => ({ ...prev, [selectedFileKey]: true }));
                   const fetchTx = async () => {
                     try {
-                      const jwt = localStorage.getItem("firebase_jwt");
                       const baseUrl = import.meta.env.VITE_API_BASE_URL;
                       const res = await fetchWithAuth(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(selectedFileKey)}`);
                       if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -247,7 +244,6 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                   setFilesLoading(prev => ({ ...prev, [activeTab]: true }));
                   setFilesError(prev => ({ ...prev, [activeTab]: null }));
                   try {
-                    const jwt = localStorage.getItem("firebase_jwt");
                     const baseUrl = import.meta.env.VITE_API_BASE_URL;
                     const res = await fetchWithAuth(`${baseUrl}/raw-files/by-accountid?accountId=${encodeURIComponent(activeTab)}`);
                     if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -299,7 +295,6 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
     setFilesError(prev => ({ ...prev, [activeTab]: null }));
     const fetchFiles = async () => {
       try {
-        const jwt = localStorage.getItem("firebase_jwt");
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
         const res = await fetchWithAuth(`${baseUrl}/raw-files/by-accountid?accountId=${encodeURIComponent(activeTab)}`);
         if (!res.ok) {
@@ -345,7 +340,6 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                 setFileError(null);
                 if (!selectedAccountId || !selectedFile) return;
                 try {
-                  const jwt = localStorage.getItem("firebase_jwt");
                   const baseUrl = import.meta.env.VITE_API_BASE_URL;
                   const formData = new FormData();
                   formData.append("file", selectedFile);
@@ -499,7 +493,6 @@ accounts={accounts.map(acc => ({ id: acc.id, name: acc.name, productName: acc.pr
                             setRawTxLoading(prev => ({ ...prev, [file.fileKey]: true }));
                             const fetchTx = async () => {
                               try {
-                                const jwt = localStorage.getItem("firebase_jwt");
                                 const baseUrl = import.meta.env.VITE_API_BASE_URL;
                                 const res = await fetchWithAuth(`${baseUrl}/raw-transactions/by-filekey?fileKey=${encodeURIComponent(file.fileKey)}`);
                                 if (!res.ok) throw new Error(`API error: ${res.status}`);

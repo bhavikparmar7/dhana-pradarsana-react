@@ -52,7 +52,8 @@ export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, da
   }
 
   // Transaction types/categories state
-  const [typeCategories, setTypeCategories] = React.useState<any>(null);
+  // Use a loose type for typeCategories to avoid 'any' lint error
+  const [typeCategories, setTypeCategories] = React.useState<Record<string, { category: string[]; subcategory?: string[] }> | null>(null);
   const [selectedType, setSelectedType] = React.useState<string>('');
   const [selectedCategory, setSelectedCategory] = React.useState<string>('');
   const [selectedSubcategory, setSelectedSubcategory] = React.useState<string>('');
@@ -235,7 +236,7 @@ export function ResolveDialog({ open, onOpenChange, selectedrawTransactionId, da
               setSubmitting(true);
               try {
                 const baseUrl = import.meta.env.VITE_API_BASE_URL;
-                const payload = {
+                const payload: Record<string, unknown> = {
                   rawTransactionId: selectedrawTransactionId,
                   date,
                   description,

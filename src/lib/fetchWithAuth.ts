@@ -28,7 +28,7 @@ export async function fetchWithAuth(input: RequestInfo, init: RequestInit = {}):
       // Token expired, logout user
       try {
         await auth.signOut();
-      } catch {}
+      } catch { /* empty */ }
       localStorage.removeItem("firebase_jwt");
       localStorage.removeItem("firebase_jwt_expires_at");
       window.location.href = "/login";

@@ -51,7 +51,6 @@ export default function TransactionsPage() {
       setLoading(true);
       setError(null);
       try {
-        const jwt = localStorage.getItem("firebase_jwt");
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
         const { fetchWithAuth } = await import("@/lib/fetchWithAuth");
         const res = await fetchWithAuth(`${baseUrl}/transactions/by-userid?limit=${pageSize}&page=${page}`);
@@ -69,7 +68,7 @@ export default function TransactionsPage() {
     fetchData();
   }, [page, pageSize]);
 
-  const columns = React.useMemo<ColumnDef<Transaction, any>[]>(
+  const columns = React.useMemo<ColumnDef<Transaction, unknown>[]>(
     () => [
       {
         header: "Date",
@@ -109,10 +108,11 @@ export default function TransactionsPage() {
         header: "Account Name",
         accessorKey: "accountName",
         cell: info => {
-          const value = info.getValue() || "-";
+          const value = info.getValue();
+          const strValue = typeof value === 'string' ? value : (value ? String(value) : "-");
           return (
-            <span className="block truncate max-w-xs whitespace-nowrap" title={value}>
-              {value}
+            <span className="block truncate max-w-xs whitespace-nowrap" title={strValue}>
+              {strValue}
             </span>
           );
         },
@@ -123,10 +123,10 @@ export default function TransactionsPage() {
         cell: info => {
           const value = (info.getValue<string>() || "").toLowerCase();
           if (value === "income") {
-            return <span className="flex items-center gap-1 text-green-600 dark:text-green-400"><BanknoteArrowUp className="w-5 h-5" title="Income" /></span>;
+            return <span className="flex items-center gap-1 text-green-600 dark:text-green-400"><BanknoteArrowUp className="w-5 h-5" aria-label="Income" /></span>;
           }
           if (value === "expense") {
-            return <span className="flex items-center gap-1 text-red-600 dark:text-red-400"><BanknoteArrowDown className="w-5 h-5" title="Expense" /></span>;
+            return <span className="flex items-center gap-1 text-red-600 dark:text-red-400"><BanknoteArrowDown className="w-5 h-5" aria-label="Expense" /></span>;
           }
           if (value === "transfer") {
             // Use amber for transfer for better distinction
@@ -152,7 +152,7 @@ export default function TransactionsPage() {
       {
         id: "actions",
         header: "",
-        cell: ({ row }) => (
+        cell: () => (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
