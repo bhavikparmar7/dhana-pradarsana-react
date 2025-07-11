@@ -116,11 +116,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
       {!otpSent ? (
         <form
           onSubmit={handleSendOtp}
-          className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-sm"
+          className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
         >
           <h1 className="text-2xl font-bold text-center mb-4">Login</h1>
           <div className="flex flex-col gap-3">
@@ -140,7 +140,7 @@ export default function LoginPage() {
         </form>
       ) : (
         <Form {...otpForm}>
-          <form onSubmit={otpForm.handleSubmit(handleOtpSubmit)} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-sm space-y-6">
+          <form onSubmit={otpForm.handleSubmit(handleOtpSubmit)} className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-6">
             <h1 className="text-2xl font-bold text-center mb-4">Enter OTP</h1>
             <FormField
               control={otpForm.control}

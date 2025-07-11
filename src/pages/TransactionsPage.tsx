@@ -79,7 +79,7 @@ export default function TransactionsPage() {
           const month = String(date.getMonth() + 1).padStart(2, '0')
           const year = date.getFullYear()
           return (
-            <span className="text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap">
+            <span className="text-gray-900 font-medium whitespace-nowrap">
               {`${day}-${month}-${year}`}
             </span>
           )
@@ -123,14 +123,14 @@ export default function TransactionsPage() {
         cell: info => {
           const value = (info.getValue<string>() || "").toLowerCase();
           if (value === "income") {
-            return <span className="flex items-center gap-1 text-green-600 dark:text-green-400"><BanknoteArrowUp className="w-5 h-5" aria-label="Income" /></span>;
+            return <span className="flex items-center gap-1 text-green-600"><BanknoteArrowUp className="w-5 h-5" aria-label="Income" /></span>;
           }
           if (value === "expense") {
-            return <span className="flex items-center gap-1 text-red-600 dark:text-red-400"><BanknoteArrowDown className="w-5 h-5" aria-label="Expense" /></span>;
+            return <span className="flex items-center gap-1 text-red-600"><BanknoteArrowDown className="w-5 h-5" aria-label="Expense" /></span>;
           }
           if (value === "transfer") {
             // Use amber for transfer for better distinction
-            return <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400"><RefreshCcw className="w-5 h-5" aria-label="Transfer" /></span>;
+            return <span className="flex items-center gap-1 text-amber-600"><RefreshCcw className="w-5 h-5" aria-label="Transfer" /></span>;
           }
           return <span className="text-gray-400">-</span>;
         },
@@ -197,11 +197,11 @@ export default function TransactionsPage() {
       <h1 className="text-2xl font-bold mb-4">Transactions</h1>
       {loading && <div className="text-muted-foreground">Loading...</div>}
       {error && <div className="text-red-500">{error}</div>}
-      <div className="overflow-x-auto rounded-lg border bg-white dark:bg-gray-900">
+      <div className="overflow-x-auto rounded-lg border bg-white">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id} className="bg-gray-100 dark:bg-gray-800">
+              <TableRow key={headerGroup.id} className="bg-gray-100">
                 {headerGroup.headers.map(header => (
                   <TableHead key={header.id} className="px-4 py-2 text-left font-semibold whitespace-nowrap">
                     {flexRender(header.column.columnDef.header, header.getContext())}
@@ -244,7 +244,7 @@ export default function TransactionsPage() {
         </div>
         <div className="flex gap-2">
           <button
-            className="px-3 py-1 rounded border bg-gray-100 dark:bg-gray-800 disabled:opacity-50 flex items-center justify-center"
+            className="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50 flex items-center justify-center"
             onClick={() => setPage(page - 1)}
             disabled={!canPrev}
             aria-label="Previous page"
@@ -252,7 +252,7 @@ export default function TransactionsPage() {
             <ChevronLeftIcon className="w-4 h-4" />
           </button>
           <button
-            className="px-3 py-1 rounded border bg-gray-100 dark:bg-gray-800 disabled:opacity-50 flex items-center justify-center"
+            className="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50 flex items-center justify-center"
             onClick={() => setPage(page + 1)}
             disabled={!canNext}
             aria-label="Next page"

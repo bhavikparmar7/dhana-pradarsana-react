@@ -46,7 +46,7 @@ export function AppHeader() {
           <Button variant="ghost" size="icon" className="rounded-full h-9 w-9">
             <Avatar className="h-8 w-8">
               <AvatarImage src="" alt="avatar" />
-              <AvatarFallback className="text-gray-900 dark:text-gray-100 bg-gray-200 dark:bg-gray-700">
+              <AvatarFallback className="text-gray-900 bg-gray-200">
                 {user?.name?.[0] || "U"}
               </AvatarFallback>
             </Avatar>

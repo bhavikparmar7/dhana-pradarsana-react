@@ -117,7 +117,7 @@ export default function BalanceSheetPage() {
               {/* Assets Card */}
               <Card className="shadow-lg border-2 border-green-100">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex justify-center items-center text-base font-bold text-gray-600 dark:text-gray-300 tracking-wide font-sans">
+                  <CardTitle className="flex justify-center items-center text-base font-bold text-gray-600 tracking-wide font-sans">
                     <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-2"></span>
                     Assets
                   </CardTitle>
@@ -176,7 +176,7 @@ export default function BalanceSheetPage() {
               {/* Liabilities Card */}
               <Card className="shadow-lg border-2 border-red-100">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex justify-center items-center text-base font-bold text-gray-600 dark:text-gray-300 tracking-wide font-sans">
+                  <CardTitle className="flex justify-center items-center text-base font-bold text-gray-600 tracking-wide font-sans">
                     <span className="inline-block w-2 h-2 rounded-full bg-red-400 mr-2"></span>
                     Liabilities
                   </CardTitle>
