@@ -133,7 +133,7 @@ export default function LoginPage() {
               required
             />
             <div id="recaptcha-container" />
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading || phone.length !== 10}>
               {loading ? "Sending..." : "Send OTP"}
             </Button>
           </div>
